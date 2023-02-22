@@ -72,6 +72,12 @@ export function getOrCreateAavegotchi(
         gotchi.createdAt = event.block.number;
         gotchi.timesTraded = BIGINT_ZERO;
         gotchi.historicalPrices = [];
+        gotchi = updateAavegotchiInfo(
+            gotchi,
+            BigInt.fromString(id),
+            event,
+            false
+        );
     } else if (gotchi == null && !createIfNotFound) {
         return null;
     }
@@ -138,13 +144,24 @@ export function getOrCreateERC1155Purchase(
 
 export function getOrCreateItemType(
     id: string,
-    createIfNotFound: boolean = true
+    createIfNotFound: boolean = true,
+    event: ethereum.Event | null = null
 ): ItemType | null {
     let itemType = ItemType.load(id);
 
     if (itemType == null && createIfNotFound) {
         itemType = new ItemType(id);
         itemType.consumed = BIGINT_ZERO;
+        itemType.rarityScoreModifier = 0;
+        itemType.traitModifiers = [0, 0, 0, 0, 0, 0];
+        itemType.maxQuantity = BIGINT_ZERO;
+        if (event) {
+            itemType = updateItemTypeInfo(
+                itemType,
+                BigInt.fromString(id),
+                event
+            );
+        }
     }
 
     return itemType;
@@ -297,7 +314,8 @@ export function updateERC1155ListingInfo(
         } else if (listing.category.toI32() < 3) {
             let itemType = getOrCreateItemType(
                 listingInfo.erc1155TypeId.toString(),
-                false
+                true,
+                event
             );
 
             if (!itemType) {
