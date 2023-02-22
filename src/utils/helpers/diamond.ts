@@ -72,12 +72,6 @@ export function getOrCreateAavegotchi(
         gotchi.createdAt = event.block.number;
         gotchi.timesTraded = BIGINT_ZERO;
         gotchi.historicalPrices = [];
-        gotchi = updateAavegotchiInfo(
-            gotchi,
-            BigInt.fromString(id),
-            event,
-            false
-        );
     } else if (gotchi == null && !createIfNotFound) {
         return null;
     }
@@ -220,7 +214,7 @@ export function updateERC721ListingInfo(
         if (listing.category.toI32() <= 2) {
             let portal = getOrCreatePortal(
                 listingInfo.erc721TokenId.toString(),
-                false
+                true
             );
 
             if (portal) {
@@ -234,7 +228,7 @@ export function updateERC721ListingInfo(
                     listing.soldBefore = false;
                 }
             }
-        } else {
+        } else if (listing.category.toI32() == 3) {
             let aavegotchi = getOrCreateAavegotchi(
                 listingInfo.erc721TokenId.toString(),
                 event,

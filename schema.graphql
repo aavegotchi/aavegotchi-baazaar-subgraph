@@ -107,17 +107,15 @@ type Portal @entity {
 
     gotchiId: BigInt
 
-    buyer: User!
+    buyer: User
 
     hauntId: BigInt!
 
-    owner: User!
-
-    options: [AavegotchiOption!]! @derivedFrom(field: "portal")
+    owner: User
 
     gotchi: Aavegotchi
 
-    status: PortalStatus!
+    status: PortalStatus
 
     boughtAt: BigInt
 

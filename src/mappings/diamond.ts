@@ -118,6 +118,12 @@ export function handleERC721ListingAdd(event: ERC721ListingAdd): void {
             event.params.erc721TokenId.toString(),
             event
         )!;
+        gotchi = updateAavegotchiInfo(
+            gotchi,
+            event.params.erc721TokenId,
+            event,
+            false
+        );
         listing.collateral = gotchi.collateral;
         gotchi.activeListing = event.params.listingId;
         gotchi.save();
@@ -416,5 +422,11 @@ export function handleERC1155ListingRemoved(
 
     listing = updateERC1155ListingInfo(listing, event.params.listingId, event);
 
+    listing.save();
+}
+
+export function handleERC1155ListingUpdated(event: UpdateERC1155Listing): void {
+    let listing = getOrCreateERC1155Listing(event.params.listingId.toString());
+    listing = updateERC1155ListingInfo(listing, event.params.listingId, event);
     listing.save();
 }
